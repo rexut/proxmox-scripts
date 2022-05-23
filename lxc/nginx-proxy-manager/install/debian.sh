@@ -87,13 +87,17 @@ fi
 runcmd pip install --no-cache-dir cffi certbot
 
 # Install openresty
+#
+# RESPECT THE DIFFERENT URL FOR aarch64/arm64 SYSTEMS (Raspberry Pi), SEE:
+# https://openresty.org/en/linux-packages.html#debian
+#
 log "Installing openresty"
 wget -qO - https://openresty.org/package/pubkey.gpg | apt-key add -
 _distro_release=$(wget $WGETOPT "http://openresty.org/package/$DISTRO_ID/dists/" -O - | grep -o "$DISTRO_CODENAME" | head -n1 || true)
 if [ $DISTRO_ID = "ubuntu" ]; then
-  echo "deb [trusted=yes] http://openresty.org/package/$DISTRO_ID ${_distro_release:-focal} main" | tee /etc/apt/sources.list.d/openresty.list
+  echo "deb [trusted=yes] http://openresty.org/package/arm64/$DISTRO_ID ${_distro_release:-focal} main" | tee /etc/apt/sources.list.d/openresty.list
 else
-  echo "deb [trusted=yes] http://openresty.org/package/$DISTRO_ID ${_distro_release:-bullseye} openresty" | tee /etc/apt/sources.list.d/openresty.list
+  echo "deb [trusted=yes] http://openresty.org/package/arm64/$DISTRO_ID ${_distro_release:-bullseye} openresty" | tee /etc/apt/sources.list.d/openresty.list
 fi
 runcmd apt-get update && apt-get install -y -q --no-install-recommends openresty
 
